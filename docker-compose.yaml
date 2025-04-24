@@ -1,0 +1,60 @@
+services:
+  frontend:
+    image: aeroserg/travel-exp-frontend:latest
+    container_name: travel-exp-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    depends_on:
+      - backend
+    networks:
+      - travel_exp_net
+
+  backend:
+    image: aeroserg/travel-exp-backend:latest
+    container_name: travel-exp-backend
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - MONGO_URI=mongodb://root:adjalbv&bskdf2Bk1BC3keJ!Jk13@mongo:27017/travel-exp?authSource=admin
+      - JWT_SECRET=BCI@udb2i&BKJHBR@YBKjB@3u2lpcvwpbfr3y2blcwIHBCIuy2evd2eyvdE
+      - PORT=4000
+    depends_on:
+      - mongo
+    networks:
+      - travel_exp_net
+
+  mongo:
+    image: mongo:6.0
+    container_name: travel-exp-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: adjalbv&bskdf2Bk1BC3keJ!Jk13
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - travel_exp_net
+
+  mongo-express:
+    image: mongo-express
+    container_name: travel-exp-mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+    networks:
+      - travel_exp_net
+
+networks:
+  travel_exp_net:
+
+volumes:
+  mongo_data:
+    driver: local
