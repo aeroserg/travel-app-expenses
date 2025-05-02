@@ -1,4 +1,5 @@
 import type { Config } from 'jest';
+import '@testing-library/jest-dom';
 
 const config: Config = {
   testEnvironment: 'jsdom',

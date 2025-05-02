@@ -47,6 +47,10 @@ services:
     restart: always
     ports:
       - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: adjalbv&bskdf2Bk1BC3keJ!Jk13
+      ME_CONFIG_MONGODB_URL: mongodb://root:adjalbv&bskdf2Bk1BC3keJ!Jk13@mongo:27017/
     depends_on:
       - mongo
     networks:
