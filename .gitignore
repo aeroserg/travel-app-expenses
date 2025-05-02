@@ -35,6 +35,13 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
+key.json
+key.txt
+main.tf
+service_key.json
+terraform.tfstate
+terraform.tfstate.backup
+
 # dotenv environment variable files
 .env
 .env.development.local
@@ -51,6 +58,8 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
+
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
