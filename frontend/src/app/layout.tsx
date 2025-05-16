@@ -4,7 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { Providers } from "../store/providers";
 
 export const metadata: Metadata = {
-  title: "Финансы",
+  title: "Finance Tracker",
   description: "ФинТрекер для мониторинга финансов в поездках",
 };
 

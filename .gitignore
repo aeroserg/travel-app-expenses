@@ -35,12 +35,6 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-key.json
-key.txt
-main.tf
-service_key.json
-terraform.tfstate
-terraform.tfstate.backup
 
 # dotenv environment variable files
 .env
