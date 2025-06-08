@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { TokenMiddleware } from './middleware/token.middleware';
 import { DebtsModule } from './debts/debts.module';
 import { AppController } from './app.controller';
+import { MetricsMiddleware } from './metrics/metrics.middlewar';
 
 @Module({
   imports: [
@@ -30,5 +31,6 @@ import { AppController } from './app.controller';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(TokenMiddleware).forRoutes('*');
+    consumer.apply(MetricsMiddleware).forRoutes('*');
   }
 }
