@@ -26,7 +26,7 @@ resource "yandex_vpc_subnet" "travel_app_subnet" {
 }
 
 resource "yandex_compute_instance" "vm" {
-  name        = "autodeployment-vm-travel-app"
+  name        = "calendar-app-vm"
   platform_id = "standard-v1"
   zone        = "ru-central1-a"
 
@@ -39,7 +39,7 @@ resource "yandex_compute_instance" "vm" {
     auto_delete = true
     initialize_params {
       image_id = "fd84gg15m6kjdembasoq"
-      size = 30 
+      size = 35 
       type = "network-hdd" 
     }
   }
@@ -60,5 +60,20 @@ resource "yandex_compute_instance" "vm" {
                 - [ systemctl, enable, docker ]
                 - [ systemctl, start, docker ]
             EOT
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt update",
+      "sudo apt install -y docker.io",
+      "sudo systemctl enable docker",
+      "sudo systemctl start docker"
+    ]
+
+  connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file("~/.ssh/id_ed25519")
+      host        = self.network_interface[0].nat_ip_address
+    }
   }
 }

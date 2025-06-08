@@ -3,8 +3,11 @@ name: travel-app-ci
 on:
   push:
     branches: [master]
+    tags:
+      - 'v*.*.*'
   pull_request:
     branches: [master]
+  workflow_dispatch:
 
 jobs:
   build-backend:
@@ -109,3 +112,58 @@ jobs:
       - name: Run frontend tests
         working-directory: frontend
         run: npm test
+  push-backend-image:
+    name: Build and Push Backend Docker Image
+    runs-on: ubuntu-latest
+    needs: test-backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push backend Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: |
+            aeroserg/travel-exp-backend:latest
+            aeroserg/travel-exp-backend:${{ github.ref_name }}
+
+
+  push-frontend-image:
+    name: Build and Push Frontend Docker Image
+    runs-on: ubuntu-latest
+    needs: test-frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push frontend Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: |
+            aeroserg/travel-exp-frontend:latest
+            aeroserg/travel-exp-frontend:${{ github.ref_name }}
+

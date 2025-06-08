@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest "
+    "test": "jest ",
+    "docker:build": "docker build -t aeroserg/travel-exp-frontend .",
+    "docker:push": "docker push aeroserg/travel-exp-frontend",
+    "docker:upload": "npm run docker:build && npm run docker:push",
+    "yclogin": "yc iam create-token > key.txt && cat key.txt | docker login --username iam --password-stdin cr.yandex"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
