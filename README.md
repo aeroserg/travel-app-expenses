@@ -4,7 +4,7 @@
 
 ---
 
-## Используемые команды
+### Используемые команды
 
 #### Подключение к кластеру
 
@@ -110,7 +110,7 @@ kubectl get hpa
 #### Проведение нагрузочного тестирования backend через frontend
 
 ```bash
-wrk -t4 -c100 -d60s http://84.201.130.195:32000
+wrk -t2 -c5 -d30s -s load.lua http://84.201.130.195.nip.io:30701
 ```
 
 #### Проверка HPA после нагрузки
@@ -150,12 +150,43 @@ kubectl delete all --all
 ```
 
 #### Редеплой сервиса
+
 ```bash
     docker buildx build --platform linux/amd64 -t aeroserg/travel-exp-backend:latest --push .
     kubectl rollout restart deployment travel-exp-backend
 
 ```
+
 ```bash
     kubectl apply -f backend.yaml
     kubectl rollout restart deployment travel-exp-backend
 ```
+
+#### Все поды бэкенда с метками
+
+```bash
+kubectl get pods -l app=travel-exp-backend -w
+```
+
+#### Реальное потребление CPU/Memory (kube-prometheus в Grafana)
+
+Dashboard → Kubernetes / Compute Resources / Pod   pod=travel-exp-backend*
+
+#### Сколько реплик хочет HPA
+
+```bash
+kubectl get hpa
+```
+
+#### Логи одного Pod
+
+```bash
+kubectl logs -f deploy/travel-exp-backend
+```
+
+kubectl get nodes
+kubectl get pods -o wide
+kubectl get deploy
+kubectl get svc
+kubectl get ingress
+kubectl get hpa
