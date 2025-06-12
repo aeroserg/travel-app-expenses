@@ -1,0 +1,30 @@
+# k8s/ingress-travel-exp.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: travel-exp-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: 84.201.130.195.nip.io
+    http:
+      paths:
+      # --- BACKEND ---
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: travel-exp-backend-svc
+            port:
+              number: 4000
+      # --- FRONTEND ---
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: travel-exp-frontend-svc
+            port:
+              number: 3000

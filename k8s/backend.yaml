@@ -1,3 +1,4 @@
+# k8s/backend.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,11 +39,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: travel-exp-backend-svc
+  labels:
+    app: travel-exp-backend
+    release: prometheus
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: travel-exp-backend
   ports:
-    - port: 4000
+    - name: http
+      port: 4000
       targetPort: 4000
-      nodePort: 32001

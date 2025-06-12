@@ -1,4 +1,11 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+// src/app.module.ts
+
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { GroupsModule } from './groups/groups.module';
@@ -12,6 +19,7 @@ import { TokenMiddleware } from './middleware/token.middleware';
 import { DebtsModule } from './debts/debts.module';
 import { AppController } from './app.controller';
 import { MetricsMiddleware } from './metrics/metrics.middlewar';
+import { MetricsController } from './metrics/metrics.controller';
 
 @Module({
   imports: [
@@ -25,12 +33,16 @@ import { MetricsMiddleware } from './metrics/metrics.middlewar';
     SyncModule,
     DebtsModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, MetricsController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(TokenMiddleware).forRoutes('*');
+    consumer
+      .apply(TokenMiddleware)
+      .exclude({ path: 'metrics', method: RequestMethod.GET })
+      .forRoutes('*');
+
     consumer.apply(MetricsMiddleware).forRoutes('*');
   }
 }

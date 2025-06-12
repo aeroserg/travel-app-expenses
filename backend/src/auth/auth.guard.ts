@@ -47,19 +47,19 @@ export class AuthGuard implements CanActivate {
     );
 
     if (!token) {
-      this.logger.warn('❌ Отсутствует токен, доступ запрещен');
+      this.logger.warn('Отсутствует токен, доступ запрещен');
       throw new UnauthorizedException('Требуется аутентификация');
     }
 
-    this.logger.debug(`🔑 Входящий токен: ${token}`);
+    this.logger.debug(`Входящий токен: ${token}`);
 
     try {
       const decoded = this.jwtService.verify<DecodedToken>(token);
 
-      this.logger.debug(`🔓 Расшифрованный токен: ${JSON.stringify(decoded)}`);
+      this.logger.debug(`Расшифрованный токен: ${JSON.stringify(decoded)}`);
 
       if (!decoded.userId || !decoded.email) {
-        this.logger.warn('⚠️ Ошибка в токене: отсутствуют userId или email');
+        this.logger.warn('Ошибка в токене: отсутствуют userId или email');
         throw new UnauthorizedException('Неверный токен');
       }
 
@@ -67,12 +67,12 @@ export class AuthGuard implements CanActivate {
       this.logger.debug(`Пользователь: ${JSON.stringify(user)} `);
       if (!user) {
         this.logger.warn(
-          `❌ Пользователь с ID ${decoded.userId} не найден или токен не совпадает`,
+          `Пользователь с ID ${decoded.userId} не найден или токен не совпадает`,
         );
         throw new UnauthorizedException('Неверный токен');
       }
 
-      this.logger.log(`✅ Пользователь ${user.email} успешно авторизован`);
+      this.logger.log(`Пользователь ${user.email} успешно авторизован`);
 
       request.user = user;
 
@@ -81,7 +81,7 @@ export class AuthGuard implements CanActivate {
       const errMessage =
         error instanceof Error ? error.message : 'Неизвестная ошибка';
       this.logger.error(
-        `🛑 Ошибка авторизации: ${errMessage}`,
+        `Ошибка авторизации: ${errMessage}`,
         error instanceof Error ? error.stack : '',
       );
       throw new UnauthorizedException('Ошибка авторизации');
