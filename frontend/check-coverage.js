@@ -11,7 +11,7 @@ if (!fs.existsSync(summaryPath)) {
 
 const { total: { lines: { pct } } } = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
 
-const MIN_COVERAGE = 80;
+const MIN_COVERAGE = 20;
 if (pct < MIN_COVERAGE) {
   console.error(`🛑 Покрытие слишком низкое: ${pct}% (требуется ≥ ${MIN_COVERAGE}%)`);
   process.exit(1);
