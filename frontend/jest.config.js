@@ -14,6 +14,8 @@ const customJestConfig = {
     '^@/utils/(.*)$': '<rootDir>/src/utils/$1',
     '^@/hooks/(.*)$': '<rootDir>/src/hooks/$1',
   },
+  coverageDirectory: 'coverage',
+  coverageReporters: ['json-summary', 'lcov', 'text-summary'],
 };
 
 module.exports = createJestConfig(customJestConfig);
