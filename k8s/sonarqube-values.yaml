@@ -1,0 +1,51 @@
+# sonarqube-values.yaml
+monitoringPasscode: "monitoring123"
+
+community:
+  enabled: true
+
+image:
+  tag: "10.1.0-community"
+  pullPolicy: IfNotPresent
+
+persistence:
+  enabled: true
+  storageClass: "yc-network-ssd"
+  size: 32Gi
+
+service:
+  type: LoadBalancer
+  port: 9000
+
+postgresql:
+  enabled: true
+  postgresqlUsername: sonar
+  postgresqlPassword: sonar_pass
+  postgresqlDatabase: sonarqube
+
+web:
+  resources:
+    requests:
+      cpu: "2000m"
+      memory: "16Gi"
+    limits:
+      cpu: "4000m"
+      memory: "32Gi"
+
+search:
+  resources:
+    requests:
+      cpu: "2000m"
+      memory: "16Gi"
+    limits:
+      cpu: "4000m"
+      memory: "32Gi"
+
+ce:
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "4Gi"
+    limits:
+      cpu: "2000m"
+      memory: "8Gi"

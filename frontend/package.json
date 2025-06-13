@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest ",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
     "docker:build": "docker build -t aeroserg/travel-exp-frontend .",
     "docker:push": "docker push aeroserg/travel-exp-frontend",
     "docker:upload": "npm run docker:build && npm run docker:push",

@@ -110,7 +110,7 @@ kubectl get hpa
 #### Проведение нагрузочного тестирования backend через frontend
 
 ```bash
-wrk -t2 -c5 -d30s -s load.lua http://84.201.130.195.nip.io:30701
+wrk -t2 -c5 -d30s -s load.lua http://158.160.44.174.nip.io:30701
 ```
 
 #### Проверка HPA после нагрузки

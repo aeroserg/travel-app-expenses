@@ -11,6 +11,6 @@ COPY . .
 
 RUN npm run build
 
-ENV NEXT_PUBLIC_API_URL=http://0.0.0.0:4000
+ENV NEXT_PUBLIC_API_URL=http://158.160.44.174.nip.io:30701/api
 
 CMD ["npm", "run", "start"]
