@@ -129,6 +129,8 @@ jobs:
           SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
         run: |
           sonar-scanner \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.projectKey=travel-exp-app \
             -Dsonar.sources=backend,frontend \
             -Dsonar.tests=backend,frontend \
@@ -138,7 +140,7 @@ jobs:
       - name: Await Quality Gate
         uses: SonarSource/sonarqube-quality-gate-action@v1.0.0
         env :
-          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   push-backend-image:
@@ -208,9 +210,12 @@ jobs:
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
 
-      - name: Authenticate to Yandex Cloud
+      - name: Activate Yandex.Cloud SA
+        env:
+          YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
         run: |
-          yc config set token ${{ secrets.YC_TOKEN }}
+          echo "$YC_SA_KEY" > /tmp/sa.json
+          yc auth activate-service-account --key-file /tmp/sa.json
 
       - name: Apply Kubernetes manifests
         run: |
