@@ -126,7 +126,7 @@ jobs:
       - name: Run SonarQube analysis
         env:
           SONAR_HOST_URL: http://158.160.44.174.nip.io:32340
-          SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           sonar-scanner \
             -Dsonar.host.url=$SONAR_HOST_URL \
