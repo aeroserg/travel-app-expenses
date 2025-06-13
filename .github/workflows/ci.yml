@@ -207,19 +207,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
+      - name: Install Yandex.Cloud CLI
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+          echo "$HOME/bin" >> $GITHUB_PATH
 
-      - name: Activate Yandex.Cloud SA
+      - name: Yandex.Cloud login
         env:
           YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
         run: |
           echo "$YC_SA_KEY" > /tmp/sa.json
           yc auth activate-service-account --key-file /tmp/sa.json
 
+      - name: Configure kubectl for Yandex Managed k8s
+        run: |
+          yc managed-kubernetes cluster get-credentials <ваш-кластер-имя> --external
+
       - name: Apply Kubernetes manifests
         run: |
+          kubectl apply -f k8s/backend-servicemonitor.yaml
           kubectl apply -f k8s/backend.yaml
+          kubectl apply -f k8s/backend-hpa.yaml
           kubectl apply -f k8s/mongo.yaml
           kubectl apply -f k8s/ingress.yaml
           kubectl apply -f k8s/backend-hpa.yaml
