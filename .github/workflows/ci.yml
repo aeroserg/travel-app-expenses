@@ -70,7 +70,7 @@ jobs:
 
       - name: Запустить анализ SonarQube
         env:
-          SONAR_HOST_URL: http://158.160.44.174.nip.io:32340
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           sonar-scanner \
@@ -84,7 +84,7 @@ jobs:
         name: Проверка Quality Gate
         uses: phwt/sonarqube-quality-gate-action@v1
         with:
-          sonar-host-url: ${{ env.SONAR_HOST_URL }}
+          sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
           sonar-project-key: travel-exp-app
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
