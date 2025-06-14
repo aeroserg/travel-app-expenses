@@ -126,7 +126,7 @@ jobs:
             ls -la /usr/bin/
             find / -type f -name "yc" 2>/dev/null | tee /tmp/yc-paths.txt
             head -n 20 /tmp/yc-paths.txt
-            $HOME/.yandex-cloud/bin/yc --version
+            $HOME/yandex-cloud/bin/yc --version
       - name: YC CLI Auth and K8s creds
         env:
           YC_KEY: ${{ secrets.YC_SA_KEY }}
