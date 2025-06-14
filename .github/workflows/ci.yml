@@ -115,31 +115,37 @@ jobs:
     needs: push_images
     steps:
         - uses: actions/checkout@v3
-
         - name: Install kubectl
           uses: azure/setup-kubectl@v3
           with:
             version: 'latest'
 
-        - name: YC Deploy via Docker
-          uses: addnab/docker-run-action@v3
-          with:
-            image: yandex/cloud-cli:latest
-            options: -v ${{ github.workspace }}:/workspace -w /workspace
-            run: |
-                echo "$YC_KEY" > key.json
-                yc config set service-account-key key.json
-                yc config set folder-id "$YC_FOLDER_ID"
-                yc version
-                yc managed-kubernetes cluster get-credentials travel-app-kuber --external
-                kubectl apply -f k8s/backend.yaml
-                kubectl apply -f k8s/mongo.yaml
-                kubectl apply -f k8s/ingress.yaml
-                kubectl apply -f k8s/backend-hpa.yaml
+        - name: Установка и авторизация YC
           env:
-            YC_KEY: ${{ secrets.YC_SA_KEY }}
+            YC_KEY:       ${{ secrets.YC_SA_KEY }}
             YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
+          run: |
+            set -x
+            curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+            export PATH=$PATH:$HOME/.yandex-cloud/bin
+            sleep 5 && yc version
+            echo "$YC_KEY" > key.json
+            yc config set service-account-key key.json
+            yc config set folder-id "$YC_FOLDER_ID"
+            yc managed-kubernetes cluster get-credentials travel-app-kuber --external
 
+        - name: Apply Kubernetes manifests
+          run: |
+            kubectl apply -f k8s/backend.yaml
+            kubectl apply -f k8s/mongo.yaml
+            kubectl apply -f k8s/ingress.yaml
+            kubectl apply -f k8s/backend-hpa.yaml
+
+            kubectl rollout status deployment/backend
+            kubectl rollout status deployment/mongo
+            kubectl rollout status deployment/ingress
+            kubectl rollout status deployment/backend-hpa
+            kubectl rollout status deployment/frontend
 
   notify:
     name: Уведомить в Telegram
