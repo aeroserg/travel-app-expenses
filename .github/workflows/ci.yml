@@ -110,68 +110,41 @@ jobs:
           cache-to:   type=gha,mode=max
 
   deploy:
-    name: Развёртывание в Kubernetes
+    name: Деплой
     runs-on: ubuntu-latest
-    needs: push_images
+    needs: [build_and_sonar, push_images]
     steps:
-        - uses: actions/checkout@v3
-        - name: Install kubectl
-          uses: azure/setup-kubectl@v3
-          with:
-            version: 'latest'
-
-        - name: Установка и авторизация YC
-          env:
-            YC_KEY:       ${{ secrets.YC_SA_KEY }}
-            YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
-          run: |
-            set -x
-            curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-
-            export PATH=$PATH:$HOME/.yandex-cloud/bin
-            source $HOME/.bashrc
-            
-            sleep 5 && yc version
-            echo "$YC_KEY" > key.json
-            yc config set service-account-key key.json
-            yc config set folder-id "$YC_FOLDER_ID"
-            yc managed-kubernetes cluster get-credentials travel-app-kuber --external
-
-        - name: Apply Kubernetes manifests
-          run: |
-            kubectl apply -f k8s/backend.yaml
-            kubectl apply -f k8s/mongo.yaml
-            kubectl apply -f k8s/ingress.yaml
-            kubectl apply -f k8s/backend-hpa.yaml
-
-            kubectl rollout status deployment/backend
-            kubectl rollout status deployment/mongo
-            kubectl rollout status deployment/ingress
-            kubectl rollout status deployment/backend-hpa
-            kubectl rollout status deployment/frontend
-
-  notify:
-    name: Уведомить в Telegram
-    runs-on: ubuntu-latest
-    needs: deploy
-    if: ${{ always() }}
-    steps:
-      - name: Успешно
-        if: ${{ success() }}
+      - uses: actions/checkout@v3
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+      - name: Install YC CLI
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+          export PATH="$HOME/.yandex-cloud/bin:$PATH"
+          yc --version
+      - name: YC CLI Auth and K8s creds
+        env:
+          YC_KEY: ${{ secrets.YC_SA_KEY }}
+          YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
+        run: |
+          export PATH="$HOME/.yandex-cloud/bin:$PATH"
+          echo "$YC_KEY" > key.json
+          yc config set service-account-key key.json
+          yc config set folder-id "$YC_FOLDER_ID"
+          yc managed-kubernetes cluster get-credentials travel-app-kuber --external
+      - name: Deploy manifests
+        run: |
+          kubectl apply -f k8s/
+          kubectl rollout status deployment/backend
+          kubectl rollout status deployment/frontend
+      - name: Healthcheck
+        run: |
+          kubectl get pods -A
+      - name: Notify Telegram
+        if: always()
         uses: appleboy/telegram-action@master
         with:
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           to:    ${{ secrets.TELEGRAM_CHAT_ID }}
           message: |
-            ✅ CI/CD успешно прошли
-            Коммит: ${{ github.sha }}:
-            
-      - name: Ошибка
-        if: ${{ failure() }}
-        uses: appleboy/telegram-action@master
-        with:
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          to:    ${{ secrets.TELEGRAM_CHAT_ID }}
-          message: |
-            ❌ CI/CD упали на шаге *${{ github.job }}*
-            Ссылка: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            ✅ Deploy завершён. Коммит: ${{ github.sha }}. Статус: ${{ job.status }}
