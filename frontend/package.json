@@ -17,6 +17,10 @@
     "docker:upload": "npm run docker:build && npm run docker:push",
     "yclogin": "yc iam create-token > key.txt && cat key.txt | docker login --username iam --password-stdin cr.yandex"
   },
+  "jest": {
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["lcov","text"]
+  },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.2.0",
