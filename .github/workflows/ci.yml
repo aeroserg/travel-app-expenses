@@ -117,38 +117,28 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
-      - name: Install YC CLI
-        run: |
-            curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-            $HOME/yandex-cloud/bin/yc --version
       - name: YC CLI Auth and K8s creds
         env:
           YC_KEY: ${{ secrets.YC_SA_KEY }}
           YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
         run: |
             curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+            export PATH=$HOME/yandex-cloud/bin:$PATH
             $HOME/yandex-cloud/bin/yc --version
-            export PATH=$PATH:$HOME/yandex-cloud/bin
+            yc --version
             echo "$YC_KEY" > key.json
-            $HOME/yandex-cloud/bin/yc config set service-account-key key.json
-            $HOME/yandex-cloud/bin/yc config set folder-id "$YC_FOLDER_ID"
-            $HOME/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials travel-app-kuber --external
+            yc config set service-account-key key.json
+            yc config set folder-id "$YC_FOLDER_ID"
+            yc managed-kubernetes cluster get-credentials travel-app-kuber --external
+
       - name: Deploy manifests
         run: |
-          kubectl apply -f k8s/
-          kubectl rollout status deployment/backend
-          kubectl rollout status deployment/frontend
+            kubectl apply -f k8s/
+            kubectl rollout status deployment/backend
+            kubectl rollout status deployment/frontend
       - name: Healthcheck
         run: |
-          kubectl get pods -A
-      - name: Notify Telegram
-        if: always()
-        uses: appleboy/telegram-action@master
-        with:
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          to:    ${{ secrets.TELEGRAM_CHAT_ID }}
-          message: |
-            Deploy завершён. Коммит: ${{ github.sha }}. Статус: ${{ job.status }}
+            kubectl get pods -A
 
   notify:
     name: Уведомить в Telegram
@@ -161,11 +151,11 @@ jobs:
           run: |
             failed_job=""
             if [[ "${{ needs.build_and_sonar.result }}" == "failure" ]]; then
-            failed_job="Сборка/тесты/Sonar"
+                failed_job="Сборка/тесты/Sonar"
             elif [[ "${{ needs.push_images.result }}" == "failure" ]]; then
-            failed_job="Docker build/push"
+                failed_job="Docker build/push"
             elif [[ "${{ needs.deploy.result }}" == "failure" ]]; then
-            failed_job="Deploy"
+                failed_job="Deploy"
             fi
             echo "FAILED_JOB=$failed_job" >> $GITHUB_ENV
 
