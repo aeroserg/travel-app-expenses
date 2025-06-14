@@ -127,7 +127,10 @@ jobs:
           run: |
             set -x
             curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+
             export PATH=$PATH:$HOME/.yandex-cloud/bin
+            source $HOME/.bashrc
+            
             sleep 5 && yc version
             echo "$YC_KEY" > key.json
             yc config set service-account-key key.json
