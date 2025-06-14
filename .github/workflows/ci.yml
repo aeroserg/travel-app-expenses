@@ -127,11 +127,12 @@ jobs:
           YC_KEY: ${{ secrets.YC_SA_KEY }}
           YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
         run: |
-          export PATH="$HOME/.yandex-cloud/bin:$PATH"
-          echo "$YC_KEY" > key.json
-          yc config set service-account-key key.json
-          yc config set folder-id "$YC_FOLDER_ID"
-          yc managed-kubernetes cluster get-credentials travel-app-kuber --external
+            curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+            $HOME/.yandex-cloud/bin/yc --version
+            echo "$YC_KEY" > key.json
+            $HOME/.yandex-cloud/bin/yc config set service-account-key key.json
+            $HOME/.yandex-cloud/bin/yc config set folder-id "$YC_FOLDER_ID"
+            $HOME/.yandex-cloud/bin/yc managed-kubernetes cluster get-credentials travel-app-kuber --external
       - name: Deploy manifests
         run: |
           kubectl apply -f k8s/
