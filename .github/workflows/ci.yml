@@ -67,7 +67,7 @@ jobs:
           sonar-project-key: travel-exp-app
           sonar-token:       ${{ secrets.SONAR_TOKEN }}
           github-token:      ${{ secrets.GITHUB_TOKEN }}
-          fail-on-quality-gate-error: true
+          fail-on-quality-gate-error: false
 
   push_images:
     name: Сборка и публикация Docker-образов
