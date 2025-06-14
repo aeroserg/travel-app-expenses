@@ -149,7 +149,8 @@ jobs:
   notify:
     name: Уведомить в Telegram
     runs-on: ubuntu-latest
-    needs: [build_and_sonar, push_images, deploy]
+    # needs: [build_and_sonar, push_images, deploy]
+    needs: [push_images, deploy]
     if: ${{ always() }}
     steps:
         - name: Определить упавший этап
