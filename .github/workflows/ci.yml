@@ -137,8 +137,10 @@ jobs:
             kubectl apply -f k8s/frontend.yaml
             kubectl apply -f k8s/ingress.yaml
             kubectl apply -f k8s/mongo.yaml
-            kubectl rollout status deployment/backend
-            kubectl rollout status deployment/frontend
+            kubectl rollout restart deployment travel-exp-backend
+            kubectl rollout restart deployment travel-exp-frontend
+            kubectl rollout status deployment travel-exp-backend
+            kubectl rollout status deployment travel-exp-frontend
       - name: Healthcheck
         run: |
             kubectl get pods -A
@@ -153,14 +155,29 @@ jobs:
           id: check_fail
           run: |
             failed_job=""
+            fail_type=""
             if [[ "${{ needs.build_and_sonar.result }}" == "failure" ]]; then
-                failed_job="Сборка/тесты/Sonar"
+            failed_job="Сборка/тесты/Sonar"
+            fail_type="❌ Ошибка"
+            elif [[ "${{ needs.build_and_sonar.result }}" == "cancelled" ]]; then
+            failed_job="Сборка/тесты/Sonar"
+            fail_type="⏹ Отмена"
             elif [[ "${{ needs.push_images.result }}" == "failure" ]]; then
-                failed_job="Docker build/push"
+            failed_job="Docker build/push"
+            fail_type="❌ Ошибка"
+            elif [[ "${{ needs.push_images.result }}" == "cancelled" ]]; then
+            failed_job="Docker build/push"
+            fail_type="⏹ Отмена"
             elif [[ "${{ needs.deploy.result }}" == "failure" ]]; then
-                failed_job="Deploy"
+            failed_job="Deploy"
+            fail_type="❌ Ошибка"
+            elif [[ "${{ needs.deploy.result }}" == "cancelled" ]]; then
+            failed_job="Deploy"
+            fail_type="⏹ Отмена"
             fi
+
             echo "FAILED_JOB=$failed_job" >> $GITHUB_ENV
+            echo "FAIL_TYPE=$fail_type" >> $GITHUB_ENV
 
         - name: Успех
           if: ${{ env.FAILED_JOB == '' }}
@@ -173,14 +190,14 @@ jobs:
                 Коммит: ${{ github.sha }}
                 Ветка: ${{ github.ref_name }}
 
-        - name: Ошибка
+        - name: Ошибка/Отмена
           if: ${{ env.FAILED_JOB != '' }}
           uses: appleboy/telegram-action@master
           with:
             token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
             to:    ${{ secrets.TELEGRAM_CHAT_ID }}
             message: |
-                ❌ CI/CD упал на этапе: *${{ env.FAILED_JOB }}*
+                ❌ ${{ env.FAIL_TYPE }} CI/CD на этапе: *${{ env.FAILED_JOB }}*
                 Ссылка: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 
