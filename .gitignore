@@ -59,9 +59,9 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # другое
-main.tf
-terraform.tfstate
-terraform.tfstate.backup
-tfplan
-.terraform.lock.hcl
-service_key.json
+# main.tf
+# terraform.tfstate
+# terraform.tfstate.backup
+# tfplan
+# .terraform.lock.hcl
+# service_key.json
