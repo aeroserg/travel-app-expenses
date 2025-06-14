@@ -120,8 +120,7 @@ jobs:
       - name: Install YC CLI
         run: |
           curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-          export PATH="$HOME/.yandex-cloud/bin:$PATH"
-          yc --version
+          $HOME/.yandex-cloud/bin/yc --version
       - name: YC CLI Auth and K8s creds
         env:
           YC_KEY: ${{ secrets.YC_SA_KEY }}
