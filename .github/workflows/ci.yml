@@ -119,8 +119,13 @@ jobs:
         uses: azure/setup-kubectl@v3
       - name: Install YC CLI
         run: |
-          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-          $HOME/.yandex-cloud/bin/yc --version
+            curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+            curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+            ls -la $HOME/
+            ls -la $HOME/.yandex-cloud/
+            ls -la $HOME/.yandex-cloud/bin/
+            find $HOME -type f -name "yc"
+            $HOME/.yandex-cloud/bin/yc --version
       - name: YC CLI Auth and K8s creds
         env:
           YC_KEY: ${{ secrets.YC_SA_KEY }}
