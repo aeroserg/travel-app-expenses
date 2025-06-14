@@ -67,6 +67,7 @@ jobs:
           sonar-project-key: travel-exp-app
           sonar-token:       ${{ secrets.SONAR_TOKEN }}
           github-token:      ${{ secrets.GITHUB_TOKEN }}
+          fail-on-quality-gate-error: true
 
   push_images:
     name: Сборка и публикация Docker-образов
@@ -113,36 +114,32 @@ jobs:
     runs-on: ubuntu-latest
     needs: push_images
     steps:
-      - uses: actions/checkout@v3
+        - uses: actions/checkout@v3
 
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
+        - name: Install kubectl
+          uses: azure/setup-kubectl@v3
+          with:
+            version: 'latest'
 
-      - name: Установка и авторизация YC
-        env:
-          YC_KEY:       ${{ secrets.YC_SA_KEY }}
-          YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
-        run: |
-          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-          export YC_BIN="$HOME/.yandex-cloud/bin/yc"
-          ls -l "$YC_BIN"
-          echo "$YC_KEY" > key.json
-          "$YC_BIN" config set service-account-key key.json
-          "$YC_BIN" config set folder-id "$YC_FOLDER_ID"
+        - name: YC Deploy via Docker
+          uses: addnab/docker-run-action@v3
+          with:
+            image: yandex/cloud-cli:latest
+            options: -v ${{ github.workspace }}:/workspace -w /workspace
+            run: |
+                echo "$YC_KEY" > key.json
+                yc config set service-account-key key.json
+                yc config set folder-id "$YC_FOLDER_ID"
+                yc version
+                yc managed-kubernetes cluster get-credentials travel-app-kuber --external
+                kubectl apply -f k8s/backend.yaml
+                kubectl apply -f k8s/mongo.yaml
+                kubectl apply -f k8s/ingress.yaml
+                kubectl apply -f k8s/backend-hpa.yaml
+          env:
+            YC_KEY: ${{ secrets.YC_SA_KEY }}
+            YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
 
-      - name: Получить kubeconfig для travel-app-kuber
-        run: |
-          # Тоже вызываем yc по полному пути
-          $HOME/.yandex-cloud/bin/yc managed-kubernetes cluster get-credentials travel-app-kuber --external
-
-      - name: Apply Kubernetes manifests
-        run: |
-          kubectl apply -f k8s/backend.yaml
-          kubectl apply -f k8s/mongo.yaml
-          kubectl apply -f k8s/ingress.yaml
-          kubectl apply -f k8s/backend-hpa.yaml
 
   notify:
     name: Уведомить в Telegram
@@ -158,8 +155,8 @@ jobs:
           to:    ${{ secrets.TELEGRAM_CHAT_ID }}
           message: |
             ✅ CI/CD успешно прошли
-            Коммит: ${{ github.sha }}
-
+            Коммит: ${{ github.sha }}:
+            
       - name: Ошибка
         if: ${{ failure() }}
         uses: appleboy/telegram-action@master
