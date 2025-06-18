@@ -1,21 +1,20 @@
 // jest.config.js
-const nextJest = require('next/jest');
+const nextJest = require("next/jest");
 
 const createJestConfig = nextJest({
-  dir: './',
+  dir: "./",
 });
 
 const customJestConfig = {
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  testPathIgnorePatterns: ['<rootDir>/src/__tests__/utils/'],
-  testEnvironment: 'jest-environment-jsdom',
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  testPathIgnorePatterns: ["<rootDir>/src/__tests__/utils/"],
+  testEnvironment: "jest-environment-jsdom",
   moduleNameMapper: {
-    '^@/components/(.*)$': '<rootDir>/src/components/$1',
-    '^@/utils/(.*)$': '<rootDir>/src/utils/$1',
-    '^@/hooks/(.*)$': '<rootDir>/src/hooks/$1',
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
-  coverageDirectory: 'coverage',
-  coverageReporters: ['json-summary', 'lcov', 'text-summary'],
+
+  coverageDirectory: "coverage",
+  coverageReporters: ["json-summary", "lcov", "text-summary"],
 };
 
 module.exports = createJestConfig(customJestConfig);

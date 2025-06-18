@@ -23,7 +23,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 @Controller('groups')
-@UseGuards(AuthGuard) // Защищаем все маршруты
+@UseGuards(AuthGuard)
 export class GroupsController {
   private readonly logger = new Logger(GroupsController.name);
 

@@ -80,7 +80,7 @@ export default function GroupList({ groups, isLoading }: GroupListProps) {
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [newGroupName, setNewGroupName] = useState("");
 
-  if (isLoading) return <Spinner />;
+if (isLoading) return <Spinner data-testid="loader" />;
 
   return (
     <Box>

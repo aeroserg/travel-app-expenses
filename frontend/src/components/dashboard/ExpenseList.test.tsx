@@ -1,31 +1,65 @@
-import { render, screen, waitFor } from '../../utils/testing/test-utils'
-import ExpenseList from './ExpenseList';
+import { render, screen, waitFor } from "@testing-library/react";
+import ExpenseList from "./ExpenseList";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ChakraProvider } from "@chakra-ui/react";
+import * as api from "@/services/api";
 
-beforeEach(() => {
-  Storage.prototype.getItem = jest.fn(() => 'mocked-token');
+jest.mock("@/services/api");
+jest.mock("../shared/Loader", () => ({
+  __esModule: true,
+  default: () => <div data-testid="loader" />,
+}));
 
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      json: () => Promise.resolve([]),
-    }),
-  ) as jest.Mock;
-});
+const renderWithProviders = () => {
+  const queryClient = new QueryClient();
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider>
+        <ExpenseList groupId="test-group-id" />
+      </ChakraProvider>
+    </QueryClientProvider>
+  );
+};
 
-describe('ExpenseList', () => {
-  it('renders empty expense list', async () => {
-    render(<ExpenseList groupId='67ef83820fade67a5fcacd66' />);
+describe("ExpenseList", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("показывает лоадер при загрузке", async () => {
+    (api.expensesApi.getExpenses as jest.Mock).mockImplementation(
+      () => new Promise(() => {})
+    );
+    renderWithProviders();
+    expect(screen.getByTestId("loader")).toBeInTheDocument();
+  });
+
+  it("показывает сообщение при пустом списке", async () => {
+    (api.expensesApi.getExpenses as jest.Mock).mockResolvedValue([]);
+    renderWithProviders();
+    await waitFor(() => {
+      expect(screen.getByText(/нет трат/i)).toBeInTheDocument();
+    });
+  });
+
+  it("отображает список трат", async () => {
+    (api.expensesApi.getExpenses as jest.Mock).mockResolvedValue([
+      {
+        _id: "1",
+        name: "Суши",
+        amount: 1000,
+        currency: "RUB",
+        paidBy: "123",
+        debtors: ["456"],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    ]);
+
+    renderWithProviders();
 
     await waitFor(() => {
-      expect(screen.getByText(/Нет трат/i)).toBeInTheDocument();
+      expect(screen.getByText("Суши")).toBeInTheDocument();
     });
-
-    expect(fetch).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          'X-Auth-Token': 'mocked-token', // <-- используем верный заголовок
-        }),
-      }),
-    );
   });
 });

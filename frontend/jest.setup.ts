@@ -1,12 +1,14 @@
 import type { Config } from 'jest';
 import '@testing-library/jest-dom';
 
+import { Request, Response } from 'node-fetch';
+
+(global as any).Request = Request;
+(global as any).Response = Response;
+
 const config: Config = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-  },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },

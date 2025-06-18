@@ -41,10 +41,8 @@ export class AuthGuard implements CanActivate {
     const ip =
       request.ip || request.headers['x-forwarded-for'] || 'неизвестный';
 
-    this.logger.debug(`🚀 Новый запрос на авторизацию с IP: ${ip as string}`);
-    this.logger.debug(
-      `🔍 Заголовки запроса: ${JSON.stringify(request.headers)}`,
-    );
+    this.logger.debug(`Новый запрос на авторизацию с IP: ${ip as string}`);
+    this.logger.debug(`Заголовки запроса: ${JSON.stringify(request.headers)}`);
 
     if (!token) {
       this.logger.warn('Отсутствует токен, доступ запрещен');

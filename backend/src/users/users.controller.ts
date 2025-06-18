@@ -13,7 +13,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { Request } from 'express';
 import { UsersService } from './users.service';
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
   user?: {
     _id: string;
     name: string;
@@ -22,7 +22,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 @Controller('users')
-@UseGuards(AuthGuard) // Защищаем все маршруты
+@UseGuards(AuthGuard)
 export class UsersController {
   private readonly logger = new Logger(UsersController.name);
 
