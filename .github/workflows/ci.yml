@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+            fetch-depth: 0
 
       - name: Setup Node.js 20
         uses: actions/setup-node@v3
@@ -53,7 +55,6 @@ jobs:
             sonarsource/sonar-scanner-cli \
             -Dsonar.projectKey=travel-exp-app \
             -Dsonar.sources=backend/src,frontend/src
-            -Dsonar.tests=backend,frontend
             -Dsonar.exclusions=**/__tests__/**,**/*.test.tsx,**/*.test.ts,**/*.spec.ts,**/*.stories.tsx,**/*.mock.ts,**/__mocks__/**,**/*.d.ts,**/node_modules/**,**/dist/**,**/coverage/**,frontend/src/types/**,frontend/src/hooks/**,frontend/src/services/**,src/auth/**,src/expenses/**,src/groups/**
             -Dsonar.test.inclusions=**/__tests__/**,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,frontend/src/components/**/*.test.tsx,frontend/src/hooks/**/*.test.ts,frontend/src/utils/**/*.test.ts
             -Dsonar.coverage.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info \
