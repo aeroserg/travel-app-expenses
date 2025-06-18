@@ -9,6 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Group } from './groups.schema';
 import { User } from 'src/users/user.schema';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class GroupsService {
@@ -23,7 +24,7 @@ export class GroupsService {
 
   async createGroup(userId: string, name: string) {
     const userObjectId = new Types.ObjectId(userId);
-    const code = Math.random().toString(36).substr(2, 8);
+    const code = randomBytes(6).toString('base64url').slice(0, 8);
 
     const group = new this.groupModel({ name, code, members: [userObjectId] });
     await group.save();

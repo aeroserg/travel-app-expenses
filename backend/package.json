@@ -36,6 +36,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@willsoto/nestjs-prometheus": "^6.0.2",
     "bcryptjs": "^3.0.2",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1",
