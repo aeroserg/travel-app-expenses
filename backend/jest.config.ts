@@ -13,8 +13,15 @@ const config: Config = {
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/$1',
   },
-
   coverageReporters: ['json-summary', 'lcov', 'text-summary'],
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/*.module.ts',
+    '!src/main.ts',
+    '!src/**/*.config.ts',
+    '!src/**/*.schema.ts',
+    '!src/**/*.middleware.ts',
+  ],
 };
 
 export default config;
