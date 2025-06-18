@@ -54,7 +54,7 @@ jobs:
             -v "${{ github.workspace }}":/usr/src \
             sonarsource/sonar-scanner-cli \
             -Dsonar.projectKey=travel-exp-app \
-            -Dsonar.sources=backend/src,frontend/src \
+            -Dsonar.sources=backend,frontend \
             -Dsonar.exclusions=**/__tests__/**,**/*.test.tsx,**/*.test.ts,**/*.spec.ts,**/*.stories.tsx,**/*.mock.ts,**/__mocks__/**,**/*.d.ts,**/node_modules/**,**/dist/**,**/coverage/**,frontend/src/types/**,frontend/src/hooks/**,frontend/src/services/**,src/auth/**,src/expenses/**,src/groups/** \
             -Dsonar.test.inclusions=**/__tests__/**,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,frontend/src/components/**/*.test.tsx,frontend/src/hooks/**/*.test.ts,frontend/src/utils/**/*.test.ts \
             -Dsonar.coverage.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info \
