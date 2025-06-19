@@ -1,0 +1,10 @@
+.git
+node_modules
+npm-debug.log
+Dockerfile
+docker-compose.yml
+*.test.ts
+*.spec.ts
+coverage/
+.vscode/
+*.md

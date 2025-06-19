@@ -15,12 +15,12 @@ const config: Config = {
   },
   coverageReporters: ['json-summary', 'lcov', 'text-summary'],
   collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.module.ts',
-    '!src/main.ts',
-    '!src/**/*.config.ts',
-    '!src/**/*.schema.ts',
-    '!src/**/*.middleware.ts',
+    '**/*.(t|j)s',
+    '!**/*.module.ts',
+    '!main.ts',
+    '!**/*.config.ts',
+    '!**/*.schema.ts',
+    '!**/*.middleware.ts',
   ],
 };
 

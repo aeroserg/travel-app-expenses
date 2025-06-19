@@ -35,7 +35,7 @@ jobs:
           npm ci
           npm run test:cov
           sed -i 's|SF:src/|SF:backend/src/|' coverage/lcov.info
-          ls -l coverage/lcov.info
+          cat coverage/lcov.info | head -n 10
 
       - name: Установить и протестировать frontend (с покрытием)
         working-directory: frontend
@@ -43,7 +43,7 @@ jobs:
           npm ci
           npm run test:cov
           sed -i 's|SF:src/|SF:frontend/src/|' coverage/lcov.info
-          ls -l coverage/lcov.info
+          cat coverage/lcov.info | head -n 10
 
       - name: Sonar Scanner
         env:

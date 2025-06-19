@@ -1,12 +1,23 @@
-
 FROM node:20-alpine
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY . .
+COPY tsconfig.json tsconfig.build.json nest-cli.json ./
+COPY .env .env.sample ./
+COPY .prettierrc .gitignore .dockerignore ./
+
+COPY jest.config.ts eslint.config.mjs ./
+
+COPY src ./src
+COPY test ./test
+
+RUN chown -R appuser:appgroup /app
+USER appuser
 
 RUN npm run build
 
