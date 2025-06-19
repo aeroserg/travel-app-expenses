@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 COPY package.json .
 COPY package-lock.json .
