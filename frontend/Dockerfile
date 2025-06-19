@@ -16,7 +16,6 @@ COPY next.config.ts .
 COPY jest.config.js .
 COPY jest.setup.ts .
 COPY check-coverage.js .
-COPY .env .
 COPY .gitignore .
 COPY .dockerignore .
 COPY .eslintrc.json .
