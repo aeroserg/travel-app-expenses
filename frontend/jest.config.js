@@ -15,18 +15,7 @@ const customJestConfig = {
 
   coverageDirectory: "coverage",
   coverageReporters: ["json-summary", "lcov", "text-summary"],
-  collectCoverageFrom: [
-    "src/**/*.{ts,tsx}",
-    "!src/**/*.d.ts",
-    "!src/**/*.config.{ts,tsx}",
-    "!src/app/**/*.tsx",
-    "!src/hooks/**",
-    "!src/api/**",
-    "!src/store/**",
-    "!src/components/shared/**",
-    "!src/components/profile/**",
-    
-  ],
+
 };
 
 module.exports = createJestConfig(customJestConfig);

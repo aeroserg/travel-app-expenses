@@ -6,7 +6,6 @@ docker-compose.yml
 *.test.ts
 *.spec.ts
 coverage/
-
 .vscode/
 *.md
 dist/
