@@ -8,7 +8,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
 
 COPY tsconfig.json tsconfig.build.json nest-cli.json ./
-COPY .env .env.sample ./
+COPY .env ./
 COPY .prettierrc .gitignore .dockerignore ./
 
 COPY jest.config.ts eslint.config.mjs ./
