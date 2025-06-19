@@ -39,7 +39,7 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const token = request.headers['x-auth-token'] as string;
     const ip =
-      request.ip || request.headers['x-forwarded-for'] || 'неизвестный';
+      request.ip ?? request.headers['x-forwarded-for'] ?? 'неизвестный';
 
     this.logger.debug(`Новый запрос на авторизацию с IP: ${ip as string}`);
     this.logger.debug(`Заголовки запроса: ${JSON.stringify(request.headers)}`);
@@ -61,7 +61,7 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException('Неверный токен');
       }
 
-      const user = await this.userModel.findOne({ _id: decoded.userId });
+      const user = await this.userModel.findOne({ _id: decoded.userId }).exec();
       this.logger.debug(`Пользователь: ${JSON.stringify(user)} `);
       if (!user) {
         this.logger.warn(

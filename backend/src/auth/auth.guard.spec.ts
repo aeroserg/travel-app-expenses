@@ -27,30 +27,37 @@ describe('AuthGuard', () => {
     authGuard = new AuthGuard(jwtService, userModel);
   });
 
-  const mockContext = (
-    headers: Record<string, string | undefined>,
-    ip = '127.0.0.1',
-  ): ExecutionContext => {
-    return {
+  interface MockRequest {
+    headers: Record<string, string>;
+    ip?: string;
+    user?: any;
+  }
+
+  const createMockContext = (headers: Record<string, string> = {}) => {
+    const request: MockRequest = {
+      headers,
+      ip: '127.0.0.1',
+    };
+
+    const context = {
       switchToHttp: () => ({
-        getRequest: () => ({
-          headers,
-          ip,
-        }),
+        getRequest: () => request,
       }),
-    } as unknown as ExecutionContext;
+    };
+
+    return { context: context as unknown as ExecutionContext, request };
   };
 
   it('should throw UnauthorizedException if token is missing', async () => {
-    const context = mockContext({});
+    const { context } = createMockContext({});
     await expect(authGuard.canActivate(context)).rejects.toThrow(
       UnauthorizedException,
     );
   });
 
   it('should throw UnauthorizedException if token is invalid', async () => {
-    const context = mockContext({ 'x-auth-token': 'invalid-token' });
-    (jwtService.verify as jest.Mock).mockImplementation(() => {
+    const { context } = createMockContext({ 'x-auth-token': 'invalid-token' });
+    jwtService.verify.mockImplementation(() => {
       throw new Error('Invalid token');
     });
 
@@ -60,11 +67,13 @@ describe('AuthGuard', () => {
   });
 
   it('should throw UnauthorizedException if user is not found', async () => {
-    const context = mockContext({ 'x-auth-token': 'valid-token' });
-    (jwtService.verify as jest.Mock).mockReturnValue({
+    const { context } = createMockContext({ 'x-auth-token': 'valid-token' });
+
+    jwtService.verify.mockReturnValue({
       userId: '123',
       email: 'test@example.com',
     });
+
     userModel.findOne.mockResolvedValue(null);
 
     await expect(authGuard.canActivate(context)).rejects.toThrow(
@@ -73,15 +82,24 @@ describe('AuthGuard', () => {
   });
 
   it('should authorize and attach user if token and user are valid', async () => {
-    const context = mockContext({ 'x-auth-token': 'valid-token' });
+    const { context, request } = createMockContext({
+      'x-auth-token': 'valid-token',
+    });
+
     const mockUser = { _id: '123', email: 'test@example.com' };
-    (jwtService.verify as jest.Mock).mockReturnValue({
+
+    jwtService.verify.mockReturnValue({
       userId: '123',
       email: 'test@example.com',
     });
-    userModel.findOne.mockResolvedValue(mockUser);
+
+    userModel.findOne.mockReturnValue({
+      exec: jest.fn().mockResolvedValue(mockUser),
+    } as any);
 
     const result = await authGuard.canActivate(context);
+
     expect(result).toBe(true);
+    expect(request.user).toEqual(mockUser);
   });
 });

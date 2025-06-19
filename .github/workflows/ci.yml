@@ -177,11 +177,17 @@ jobs:
             elif [[ "${{ needs.build_and_sonar.result }}" == "cancelled" ]]; then
             failed_job="Сборка/тесты/Sonar"
             fail_type="⏹ Отмена"
-            elif [[ "${{ needs.push_images.result }}" == "failure" ]]; then
-            failed_job="Docker build/push"
+            elif [[ "${{ needs.build_and_push_backend.result }}" == "failure" ]]; then
+            failed_job="Docker build/push backend"
             fail_type="❌ Ошибка"
-            elif [[ "${{ needs.push_images.result }}" == "cancelled" ]]; then
-            failed_job="Docker build/push"
+            elif [[ "${{ needs.build_and_push_backend.result }}" == "cancelled" ]]; then
+            failed_job="Docker build/push backend"
+            fail_type="⏹ Отмена"
+            elif [[ "${{ needs.build_and_push_frontend.result }}" == "failure" ]]; then
+            failed_job="Docker build/push frontend"
+            fail_type="❌ Ошибка"
+            elif [[ "${{ needs.build_and_push_frontend.result }}" == "cancelled" ]]; then
+            failed_job="Docker build/push frontend"
             fail_type="⏹ Отмена"
             elif [[ "${{ needs.deploy.result }}" == "failure" ]]; then
             failed_job="Deploy"

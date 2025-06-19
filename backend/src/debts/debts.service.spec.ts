@@ -90,7 +90,10 @@ describe('DebtsService', () => {
             _id: new Types.ObjectId('507f1f77bcf86cd799439011'),
             name: 'Alice',
           },
-          { _id: new Types.ObjectId('507f1f77bcf86cd799439012'), name: 'Bob' },
+          {
+            _id: new Types.ObjectId('507f1f77bcf86cd799439012'),
+            name: 'Bob',
+          },
         ],
       },
     ];
