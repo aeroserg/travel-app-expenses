@@ -13,7 +13,7 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/user.schema';
 import { UsersService } from 'src/users/users.service';
-import crypto from 'node:crypto';
+import * as crypto from 'crypto';
 
 export interface ITelegramCallback {
   id: string;

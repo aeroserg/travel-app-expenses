@@ -25,6 +25,8 @@ spec:
           value: "4000"
         - name: TELEGRAM_BOT_TOKEN
           value: "7860782185:AAG8wkkbcIx0Y00mqiRU8U2O1bet8DhGeUY"
+        - name: JWT_SECRET
+          value: "BCI@udb2i&BKJHBR@YBKjB@3u2lpcvwpbfr3y2blcwIHBCIuy2evd2eyvdE"
         - name: NODE_OPTIONS
           value: "--max-old-space-size=1536"
         resources:
