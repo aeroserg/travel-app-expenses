@@ -32,7 +32,8 @@ export class TokenMiddleware implements NestMiddleware {
       if (
         !token &&
         (req.originalUrl.includes('login') ||
-          req.originalUrl.includes('register'))
+          req.originalUrl.includes('register') ||
+          req.originalUrl.includes('telegram'))
       ) {
         this.logger.debug('Нет токена в запросе, пропускаем middleware');
         return next();
