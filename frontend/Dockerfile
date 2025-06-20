@@ -30,6 +30,4 @@ RUN chown -R appuser:appgroup /app
 
 USER appuser
 
-ENV NEXT_PUBLIC_API_URL=http://158.160.44.174.nip.io:30701/api
-
 CMD ["npm", "run", "start"]
