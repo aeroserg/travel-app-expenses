@@ -2,7 +2,7 @@
 
 const TELEGRAM_BOT_ID = "7860782185"; // NOSONAR
 const ORIGIN = "http://158.160.44.174.nip.io:30701"; // NOSONAR
-const RETURN_TO = "http://158.160.44.174.nip.io:30701/api/auth/telegram"; // NOSONAR
+const RETURN_TO = "http://158.160.44.174.nip.io:30701/auth/telegram"; // NOSONAR
 
 export default function TelegramLoginButton() {
 
