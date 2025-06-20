@@ -23,6 +23,8 @@ spec:
           value: mongodb://root:adjalbv&bskdf2Bk1BC3keJ!Jk13@mongo-svc:27017/travel-exp?authSource=admin
         - name: PORT
           value: "4000"
+        - name: TELEGRAM_BOT_TOKEN
+          value: "7860782185:AAG8wkkbcIx0Y00mqiRU8U2O1bet8DhGeUY"
         - name: NODE_OPTIONS
           value: "--max-old-space-size=1536"
         resources:

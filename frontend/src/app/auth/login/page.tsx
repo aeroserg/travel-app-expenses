@@ -1,5 +1,5 @@
 "use client";
-
+// src/app/auth/login/page.tsx
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Button, Input, Stack, Heading, Text } from "@chakra-ui/react";
@@ -7,6 +7,7 @@ import { authApi } from "@/services/api";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../validation";
+import TelegramLoginButton from "@/components/shared/TelegramLoginButton";
 
 interface LoginFormData {
   email: string;
@@ -48,6 +49,7 @@ export default function LoginPage() {
           Зарегистрироваться
         </Button>
       </Text>
+      <TelegramLoginButton />
     </Stack>
   );
 }

@@ -4,6 +4,15 @@ import { Group } from "../types/group.interface";
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://158.160.44.174.nip.io:30701/api';
 export const queryClient = new QueryClient();
+export interface ITelegramAuthPayload {
+  id: string;              // Telegram user ID
+  first_name: string;      // Имя пользователя
+  last_name?: string;      // Фамилия (опционально)
+  username?: string;       // Username (опционально)
+  photo_url?: string;      // Фото профиля (опционально)
+  auth_date: string;       // Unix timestamp, когда прошла авторизация
+  hash: string;            // Контрольная сумма, проверяющая подлинность
+}
 
 /**
  * Функция для запросов на сервер с поддержкой `X-Auth-Token`
@@ -70,11 +79,19 @@ async function apiFetch<T>(
 /** ==============================
  *  🚀 AUTH API
  *  ============================== */
+
 export const authApi = {
   async login(email: string, password: string) {
     return apiFetch<{ token: string }>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
+    });
+  },
+
+  async telegramLogin(payload: ITelegramAuthPayload) {
+    return apiFetch<{ token: string }>("/auth/telegram", {
+      method: "POST",
+      body: JSON.stringify(payload),
     });
   },
 

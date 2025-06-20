@@ -14,6 +14,9 @@ export class User extends Document {
 
   @Prop({ type: String, default: null })
   token: string | null;
+
+  @Prop({ type: String, unique: true, sparse: true })
+  telegramId?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

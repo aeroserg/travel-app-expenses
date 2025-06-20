@@ -21,6 +21,9 @@ spec:
         env:
         - name: NEXT_PUBLIC_API_URL
           value: http://travel-exp-backend-svc:4000
+        env:
+        - name: NEXT_PUBLIC_TELEGRAM_BOT_NAME
+          value: travel_expences_app_bot
 ---
 apiVersion: v1
 kind: Service

@@ -5,14 +5,22 @@ import {
   Body,
   Logger,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService, ITelegramCallback } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 
   constructor(private readonly authService: AuthService) {}
+
+  @Post('telegram')
+  async telegramLogin(@Body() payload: ITelegramCallback) {
+    const result = await this.authService.telegramLogin(payload);
+    if (!result) throw new UnauthorizedException('Invalid Telegram login');
+    return result;
+  }
 
   @Post('register')
   async register(

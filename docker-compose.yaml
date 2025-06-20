@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - NEXT_PUBLIC_API_URL=http://158.160.44.174.nip.io:30701/api
     depends_on:
       - backend
     networks:
@@ -21,6 +21,7 @@ services:
     environment:
       - MONGO_URI=mongodb://root:adjalbv&bskdf2Bk1BC3keJ!Jk13@mongo:27017/travel-exp?authSource=admin
       - JWT_SECRET=BCI@udb2i&BKJHBR@YBKjB@3u2lpcvwpbfr3y2blcwIHBCIuy2evd2eyvdE
+      - TELEGRAM_BOT_TOKEN=7860782185:AAG8wkkbcIx0Y00mqiRU8U2O1bet8DhGeUY
       - PORT=4000
     depends_on:
       - mongo
